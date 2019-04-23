@@ -19,4 +19,6 @@ leftIndex ends up at 4 rightIndex ends up at 4
 While loop terminates because leftIndex: 4 is >= rightIndex: 4
 partition() returns 4 so leftList = { 3, 4, 2, 0 }, rightList = { 5, 9, 7, 5, 8, 0 }
 
-4.1 -
+4.1 - Included in zip
+
+4.3 -
