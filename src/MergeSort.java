@@ -3,6 +3,8 @@ import java.util.Arrays;
 
 public class MergeSort {
 
+    private static int recursiveCallCounter;
+
     /**
      * Copies ArrayLists
      */
@@ -62,32 +64,63 @@ public class MergeSort {
      * Primary recursive routine that merge sorts inputList
      */
     public static void mergeSort(ArrayList<Integer> inputList) {
+        recursiveCallCounter++;
+        System.out.println("Current recursive call count: " + recursiveCallCounter);
 
         if (inputList.size() < 2) {
+            System.out.println("\nCurrent list length < 2");
+            System.out.println("Current recursive call count: " + recursiveCallCounter + "\n");
+
             return;
         }
 
         ArrayList<Integer> leftList = arrayListCopy(inputList, 0, inputList.size() / 2);
         ArrayList<Integer> rightList = arrayListCopy(inputList, inputList.size() / 2, inputList.size());
 
+        System.out.println("\nMerging left");
+        System.out.println("Pre-Sort left: " + printCurrentList(leftList));
         mergeSort(leftList);
+        System.out.println("Post-Sort left: " + printCurrentList(leftList));
+
+
+
+        System.out.println("\nMerging right");
+        System.out.println("Pre-Sort right: " + printCurrentList(rightList));
         mergeSort(rightList);
+        System.out.println("Post-Sort right: " + printCurrentList(rightList));
 
         merge(leftList, rightList, inputList);
     }
 
     public static void main(String[] args) {
+        recursiveCallCounter = 0;
 
         ArrayList<Integer> testList = new ArrayList<>();
-        Arrays.stream(new int[]{ 12, 3, 18, 24, 0, 5, -2 }).forEachOrdered(testList::add);
+        //Arrays.stream(new int[]{12, 3, 18, 24, 0, 5, -2}).forEachOrdered(testList::add);
+
+        //mergeSort(testList);
+
+        //printResults(testList);
+
+        //System.out.println("\n");
+
+        //recursiveCallCounter = 0;
+
+        //testList = new ArrayList<>();
+        Arrays.stream(new int[]{5, 3, 1, 6, 2, 4}).forEachOrdered(testList::add);
 
         mergeSort(testList);
 
-        if (isSorted(testList)) {
-            System.out.println("Merge sort successful");
-            System.out.println(printCurrentList(testList));
-        }
+        printResults(testList);
 
+    }
+
+    private static void printResults(ArrayList<Integer> inputList) {
+        if (isSorted(inputList)) {
+            System.out.println("\nMerge sort successful");
+            System.out.println(printCurrentList(inputList));
+            System.out.println("Number of calls to mergeSort: " + recursiveCallCounter);
+        }
     }
 
     private static boolean isSorted(ArrayList<Integer> inputList) {
@@ -115,5 +148,4 @@ public class MergeSort {
 
         return sb.toString();
     }
-
 }
