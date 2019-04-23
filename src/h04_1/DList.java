@@ -74,9 +74,9 @@ public class DList {
      * Inserts a new Node containing pData into this DList at index pIndex. Shifts the element
      * currently at that index (if it exists) and succeeding elements to the right (i.e., adds
      * one to their indices).
-     *
+     * <p>
      * Note that if pIndex == getSize() the new element is appended to the list.
-     *
+     * <p>
      * Throws an IndexOutOfBoundsException if pIndex < 0 or pIndex > size of the DList.
      */
     public void add(int pIndex, Integer pData) throws IndexOutOfBoundsException {
@@ -141,12 +141,14 @@ public class DList {
     public void clear() {
         // To clear the list is simple. Simply remove the node at index 0 until the list becomes
         // empty.
-        while (!isEmpty()) { remove(0); }
+        while (!isEmpty()) {
+            remove(0);
+        }
     }
 
     /**
      * Returns the element at index pIndex.
-     *
+     * <p>
      * Thows IndexOutOfBoundsException if pIndex < 0 or pIndex >= mSize.
      */
     public Integer get(int pIndex) throws IndexOutOfBoundsException {
@@ -162,7 +164,7 @@ public class DList {
 
     /**
      * Returns a reference to the Node at index pIndex.
-     *
+     * <p>
      * Thows IndexOutOfBoundsException if pIndex < 0 or pIndex >= getSize()
      */
     protected Node getNodeAt(int pIndex) throws IndexOutOfBoundsException {
@@ -213,53 +215,85 @@ public class DList {
      * Removes the element at index pIndex from this DList. Shifts any succeeding elements to
      * the left (i.e., subtracts one from their indices). Returns the element that was removed from
      * the list.
-     *
+     * <p>
      * Throws an IndexOutOfBoundsException is pIndex < 0 || pIndex >= getSize().
      */
     public Integer remove(int pIndex) throws IndexOutOfBoundsException {
-        Node node = getNodeAt(pIndex);
 
-        // Are we removing the only element in a list with one element?
-        if (getSize() == 1) {
-            setHead(null);
-            setTail(null);
+        // Sure, why not?
+        if (getSize() == 0) throw new IndexOutOfBoundsException();
+        return (getSize() == 1 || pIndex == 0 ? removeHead() : (pIndex == getSize() - 1 ? removeTail() : removeInterior(getNodeAt(pIndex))));
+
+        //if (getSize() == 0) {
+        //    throw new IndexOutOfBoundsException();
+        //}
+
+        //if (getSize() == 1 || pIndex == 0) {
+        //    return removeHead();
+        //}
+        //
+        //else if (pIndex == getSize() - 1) {
+        //    return removeTail();
+        //}
+        //else {
+        //    return removeInterior(getNodeAt(pIndex));
+        //}
+    }
+
+    /**
+     * Removes the head node from this DList. It would be inadvisable to call this method on an
+     * empty list because we do not check for that condition. Returns the data stored in the head
+     * node.
+     */
+    protected Integer removeHead() {
+        Integer data = getHead().getData();  // Save the data at the head node.
+        if (getSize() == 1) {   // Are we removing the head from a list of size 1?
+            setHead(null);      // Yes, so set the head and tail references to be null.
+            setTail(null);      // This creates an empty list.
+        } else {
+            // Change the prev reference of the node following head to null as that node will become
+            // the new head.
+            getHead().getNext().setPrev(null);
+            // Change the head reference to the node following the current head.
+            setHead(getHead().getNext());
         }
+        setSize(getSize() - 1);  // Decrement the size of the list.
+        return data;             // Return the data that was at the head.
+    }
 
-        // Else are we removing the head node in a list with more than one element (note: we will
-        // not get here if the list has only one element)?
-        else if (pIndex == 0) {
-            // Change the prev reference of the next node to null because the next node will now
-            // be the head node in the list.
-            node.getNext().setPrev(null);
+    /**
+     * Removes an interior node pNode from this DList. It would be inadvisable to call this method
+     * when pNode is null because we do not check for that condition. Returns the data stored in
+     * pNode.
+     */
+    protected Integer removeInterior(Node pNode) {
+        Integer data = pNode.getData();           // Save the data at pNode.
+        pNode.getPrev().setNext(pNode.getNext()); // These two statements unlink pNode from
+        pNode.getNext().setPrev(pNode.getPrev()); // the list.
+        setSize(getSize() - 1);                   // Decrement the size of the list.
+        return data;                              // Return the data that was at pNode.
+    }
 
-            // Since we removed the head node, we have to change the head reference to refer to the
-            // next node succeeding the one that was just removed.
-            setHead(node.getNext());
+    /**
+     * Removes the tail node from this DList. It would be inadvisable to call this method on an
+     * empty list because we do not check for that condition. Returns the data stored in the tail
+     * node.
+     */
+    protected Integer removeTail() {
+        Integer data = getTail().getData(); // Save the data at the tail node.
+        if (getSize() == 1) {               // Are we removing the tail from a list of size 1?
+            setHead(null);                  // Yes, so set the head and tail references to be null.
+            setTail(null);                  // This creates an empty list.
+
+        } else {
+            // Change the next reference of the node preceding tail to null as that node will become
+            // the new tail.
+            getTail().getPrev().setNext(null);
+            // Change the tail reference to the node preceding the current tail.
+            setTail(getTail().getPrev());
         }
-
-        // Else are we removing the tail node in a list with more than one element (note: we will
-        // not get here if the list has only one element)?
-        else if (pIndex == getSize() - 1) {
-            // Change the next reference of the previous node to null because the previous node will
-            // now be the tail node in the list.
-            node.getPrev().setNext(null);
-
-            // Since we removed the tail node, we have to change the tail reference to refer to the
-            // previous node preceding the one that was just removed.
-            setTail(node.getPrev());
-        }
-
-        // We are not removing the head or tail node.
-        else {
-            node.getPrev().setNext(node.getNext());
-            node.getNext().setPrev(node.getPrev());
-        }
-
-        // We have removed a Node so decrement the size of the list.
-        setSize(getSize() - 1);
-
-        // Return the data stored at the removed Node.
-        return node.getData();
+        setSize(getSize() - 1);  // Decrement the size of the list.
+        return data;             // Return the data that was at the tail.
     }
 
     public void removeAll(Integer pData) {
@@ -332,7 +366,7 @@ public class DList {
      * three instance variables: (1) mData is a reference to the data stored in the Node; (2) mNext
      * is a reference to the succeeding Node in the DList; and (3) mPrev is a reference to the
      * preceding Node in the DList.
-     *
+     * <p>
      * Note that Node is declared as protected so it is not visible to other classes but it is
      * accessible to subclasses of DList.
      */
@@ -389,20 +423,20 @@ public class DList {
 
         /**
          * Returns true if this Node and pNode are equal to each other where equal is defined as:
-         *
+         * <p>
          * 1. If pNode is null, returns false.
          * 2. If mNode == pNode is true, returns true.
          * 3. If the instance variables of this Node are equal to the instance variables of pNode
-         *    returns true.
+         * returns true.
          * 4. Otherwise, returns false.
          */
         @Override
         public boolean equals(Object pNode) {
-            Node node = (Node)pNode;
+            Node node = (Node) pNode;
             if (node == null) return false;
             if (this == node) return true;
             if (getData() == node.getData() && getNext() == node.getNext() &&
-            getPrev() == node.getPrev()) return true;
+                    getPrev() == node.getPrev()) return true;
             return false;
         }
 
@@ -413,14 +447,14 @@ public class DList {
             return mData;
         }
 
-       /**
+        /**
          * Accessor method for the mNext instance variable.
          */
         public Node getNext() {
             return mNext;
         }
 
-       /**
+        /**
          * Accessor method for the mPrev instance variable.
          */
         public Node getPrev() {
