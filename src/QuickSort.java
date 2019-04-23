@@ -9,7 +9,7 @@ public class QuickSort {
         mTotalWhileLoopCounter = 0;
 
 
-        int[] testArray = new int[]{5, 4, 2, 9, 5, 1, 7, 3, 8, 6};
+        int[] testArray = new int[]{5, 4, 2, 9, 1, 7, 3, 8, 6};
 
         quickSort(testArray, 0, testArray.length - 1);
 
