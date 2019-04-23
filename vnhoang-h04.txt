@@ -22,3 +22,15 @@ partition() returns 4 so leftList = { 3, 4, 2, 0 }, rightList = { 5, 9, 7, 5, 8,
 4.1 - Included in zip
 
 4.3 - Included in Zip
+
+5.1 -
+(a) 5, 6, 2, 9
+(b) 3, 7
+(c) 5, 9, 1, 4
+(d) 7, 8, 6, 2, 3
+
+5.2 -
+(c) preorder traversal: 7 -> 8 -> 5 -> 6 -> 2 -> 9 -> 3 -> 1 -> 4
+
+5.3 -
+
